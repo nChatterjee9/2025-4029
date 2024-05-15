@@ -1,0 +1,40 @@
+package org.firstinspires.ftc.teamcode.Bot.Mechanisms.AbstractMechanisms;
+
+import org.firstinspires.ftc.teamcode.Bot.Setup;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+public abstract class RunToPosMotorMechanism extends Mechanism{
+    protected DcMotorEx motor;
+    protected double margin = 50;
+    public RunToPosMotorMechanism(String name) {
+        super(name);
+        velocity = 1;
+    }
+
+    @Override
+    public void init(double target) {
+        setTarget(target);
+        motor = Setup.hardwareMap.get(DcMotorEx.class, name);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    @Override
+    public void reset(){
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    @Override
+    public void update() {
+        currentPos = motor.getCurrentPosition();
+        motor.setTargetPosition((int) targetPos);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(velocity);
+    }
+
+    @Override
+    public boolean isBusy() {
+        return Math.abs(targetPos - currentPos) >= margin;
+    }
+}
