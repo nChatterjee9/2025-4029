@@ -14,10 +14,10 @@ public abstract class RunToPosMotorMechanism extends Mechanism{
     }
 
     @Override
-    public void init(double target) {
+    public void init(double target, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         setTarget(target);
         motor = Setup.hardwareMap.get(DcMotorEx.class, name);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Bot.Mechanisms.AbstractMechanisms;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Bot.Setup;
@@ -17,6 +18,9 @@ public abstract class Mechanism {
         timer = new ElapsedTime();
     }
     public void init(double target){
+        setTarget(target);
+    }
+    public void init(double target, DcMotor.ZeroPowerBehavior zeroPowerBehavior){
         setTarget(target);
     }
     public void setTarget(double target) {targetPos = target + zero;}
@@ -43,6 +47,7 @@ public abstract class Mechanism {
     public void update(){
         currentPos = targetPos;
     }
+
     public boolean isBusy(){
         return !(currentPos==targetPos);
     }
