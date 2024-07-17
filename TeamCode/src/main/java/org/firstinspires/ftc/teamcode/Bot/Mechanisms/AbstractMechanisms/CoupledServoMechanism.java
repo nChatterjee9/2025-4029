@@ -18,7 +18,7 @@ public abstract class CoupledServoMechanism extends Mechanism{
         setTarget(target);
         servoLeft = Setup.hardwareMap.get(Servo.class, name + "Left");
         servoRight = Setup.hardwareMap.get(Servo.class, name + "Right");
-        servoLeft.setDirection(Servo.Direction.REVERSE);
+//        servoLeft.setDirection(Servo.Direction.REVERSE);
         servoLeft.setPosition(target);//+0.0078125
         servoRight.setPosition(target);
         currentPos = target;
@@ -30,6 +30,15 @@ public abstract class CoupledServoMechanism extends Mechanism{
         if(target != targetPos){
             targetPos = Range.clip(target, 0, 1);
             startTimer(Math.abs(targetPos-currentPos)/velocity);
+        }
+    }
+
+    public void reverse(boolean isLeftReversed, boolean isRightReversed){
+        if(isLeftReversed){
+            servoLeft.setDirection(Servo.Direction.REVERSE);
+        }
+        if(isRightReversed){
+            servoRight.setDirection(Servo.Direction.REVERSE);
         }
     }
 
