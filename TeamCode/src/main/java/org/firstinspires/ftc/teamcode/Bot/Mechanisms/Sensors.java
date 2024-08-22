@@ -31,7 +31,7 @@ public class Sensors {
      * @param position is >= 0 && <= to the respective array length - 1
      * @param name
      */
-    public void addSensor(Class type, int position, String name){
+    public void addSensor(Class type, String name, int position){
         if(type == ColorSensor.class){
             colors[position] = new SensorColor(name);
         } else if(type == DistanceSensor.class){
