@@ -27,7 +27,7 @@ public class Sensors {
 
     /**
      * Adds a sensor to an array sorted by class, grabs it from hardwareMap and places it in the given array position
-     * @param type
+     * @param type == ColorSensor.class || DistanceSensor.class || DigitalChannel.class
      * @param position is >= 0 && <= to the respective array length - 1
      * @param name
      */
@@ -79,7 +79,7 @@ public class Sensors {
     }
 
     /**
-     * Changes the I2c address of the color sensor at array position position to the address provided (newAddress)
+     * Changes the I2c address of the color sensor at array position position to the new address provided
      * @param newAddress
      * @param position
      */
