@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Bot.Sensors.SensorColor;
+import org.firstinspires.ftc.teamcode.Bot.Sensors.SensorDistance;
+import org.firstinspires.ftc.teamcode.Bot.Sensors.SensorSwitch;
 
 public class Sensors {
     private static SensorColor[] colors;
@@ -46,9 +49,7 @@ public class Sensors {
      * @param invertSwitch
      * @param position
      */
-    public void invertSwitch(boolean invertSwitch, int position){
-        switches[position].invertSwitch(invertSwitch);
-    }
+    public void invertSwitch(boolean invertSwitch, int position){switches[position].invertSwitch(invertSwitch);}
 
     /**
      * Returns the color seen as a double array containing ARGB
@@ -65,9 +66,7 @@ public class Sensors {
      * @param position
      * @return double distance
      */
-    public double getDistance(DistanceUnit unit, int position){
-        return distances[position].getDistance(unit);
-    }
+    public double getDistance(DistanceUnit unit, int position){return distances[position].getDistance(unit);}
 
     /**
      * Returns the limit switch status for the switch at array position position
@@ -83,9 +82,7 @@ public class Sensors {
      * @param newAddress
      * @param position
      */
-    public void setNewI2cAddressColor(I2cAddr newAddress, int position){
-        colors[position].setI2cAddress(newAddress);
-    }
+    public void setNewI2cAddressColor(I2cAddr newAddress, int position){colors[position].setI2cAddress(newAddress);}
 
     /**
      * Toggles the LED for the color sensor at array position array to the value of the boolean isOn

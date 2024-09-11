@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Bot.Mechanisms;
+package org.firstinspires.ftc.teamcode.Bot.Sensors;
 
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
