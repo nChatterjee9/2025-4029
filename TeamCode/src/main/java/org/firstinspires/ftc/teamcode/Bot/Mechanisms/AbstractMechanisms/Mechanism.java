@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Bot.Setup;
-public abstract class Mechanism {
+public class Mechanism {
     protected String name;
     public double targetPos = 0;
     protected double currentPos = 0;
