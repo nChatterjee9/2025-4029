@@ -19,7 +19,11 @@ public abstract class RunToPosMotorMechanism extends Mechanism{
         motor = Setup.hardwareMap.get(DcMotorEx.class, name);
         motor.setZeroPowerBehavior(zeroPowerBehavior);
     }
-
+    public void reverse(boolean isReversed){
+        if(isReversed){
+            motor.setDirection(DcMotorEx.Direction.REVERSE);
+        }
+    }
     @Override
     public void reset(){
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

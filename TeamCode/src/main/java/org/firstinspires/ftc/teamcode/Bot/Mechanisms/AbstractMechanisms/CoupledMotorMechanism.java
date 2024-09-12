@@ -25,6 +25,15 @@ public abstract class CoupledMotorMechanism extends Mechanism {
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
+    public void reverse(boolean isLeftReversed, boolean isRightReversed){
+        if(isLeftReversed){
+            motorLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        }
+        if(isRightReversed){
+            motorRight.setDirection(DcMotorEx.Direction.REVERSE);
+        }
+    }
     @Override
     public void reset(){
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
