@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Bot.Setup;
 import org.firstinspires.ftc.teamcode.PedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.PedroPathing.localization.ThreeWheelLocalizer;
+import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ public class Drivetrain {
 
     private IMU imu;
     private VoltageSensor batteryVoltageSensor;
-    private boolean useIMU;
 
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
@@ -63,7 +63,15 @@ public class Drivetrain {
     public void init(Pose2d startPose) {
         currentPos = startPose;
     }
-    public void update(){
+    public void update(double x, double y){
+        driveVector.setOrthogonalComponents(-y, -x);
+        driveVector.setMagnitude(MathFunctions.clamp(driveVector.getMagnitude(), 0, 1));
+        driveVector.rotateVector(follower.getPose().getHeading());
+
+        headingVector.setComponents(-x, follower.getPose().getHeading());
+
+        follower.setMovementVectors(follower.getCentripetalForceCorrection(), headingVector, driveVector);
+        follower.update();
     }
     public void telemetry(){
         Setup.telemetry.addData("Drivetrain currentPos", currentPos);
@@ -77,12 +85,5 @@ public class Drivetrain {
     }
     public Pose2d getCurrentPose() {
         return currentPos;
-    }
-
-    public void setMotorPowers(double vLeftFront, double vLeftRear, double vRightRear, double vRightFront) {
-        leftFront.setPower(vLeftFront);
-        leftRear.setPower(vLeftRear);
-        rightRear.setPower(vRightRear);
-        rightFront.setPower(vRightFront);
     }
 }
