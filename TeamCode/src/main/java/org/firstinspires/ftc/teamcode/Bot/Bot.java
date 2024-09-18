@@ -49,7 +49,7 @@ public class Bot implements Robot{
         motorMech.init(0);
         servoMech.init(0);
         slideMech.init(0);
-        drivetrain.init();
+//        drivetrain.init();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class Bot implements Robot{
         motorMech.update();
         servoMech.update();
         slideMech.update();
-        drivetrain.update();
+//        drivetrain.update();
     }
 
     @Override
