@@ -57,36 +57,26 @@ public class Setup {
         addSensors();
     }
 
-    public void configureDashboard(){
+    private void configureDashboard(){
         dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         dashboard.updateConfig();
     }
-    public void configureTelemetry(){
+    private void configureTelemetry(){
         telemetry.setMsTransmissionInterval(50);
     }
-    public void configureBulkReads() {
+    private void configureBulkReads() {
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
     }
-    public void addMechanisms(){
+    private void addMechanisms(){
         mechStates.put("drivetrain", new HardwareStates(true));
         mechStates.put("intakeMotor", new HardwareStates(true));
-        mechStates.put("intakeServo", new HardwareStates(true));
-        mechStates.put("outtakeLatchLeft", new HardwareStates(true));
-        mechStates.put("outtakeLatchRight", new HardwareStates(true));
-        mechStates.put("outtakeSlides", new HardwareStates(true));
-        mechStates.put("outtakeRotation", new HardwareStates(true));
-        mechStates.put("outtakeTilt", new HardwareStates(true));
-        mechStates.put("outtakeV4B", new HardwareStates(true));
-        mechStates.put("airplaneLauncher", new HardwareStates(true));
-        mechStates.put("winch", new HardwareStates(true));
-        mechStates.put("autoPixelDropper", new HardwareStates(true));
     }
 
-    public void addSensors(){
+    private void addSensors(){
         sensorStates.put("webcam", new HardwareStates(true));
         sensorStates.put("outtakeSlidesSwitch", new HardwareStates(true));
     }

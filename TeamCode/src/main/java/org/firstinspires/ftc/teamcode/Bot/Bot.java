@@ -21,22 +21,7 @@ public class Bot implements Robot{
         /*
         Bot constructor creates all mechanisms in Mechanism objects if they are enabled
          */
-        sensors = new Sensors(sensorStates);
-        if(hardwareStates.get("motorMech").isEnabled){
-            motorMech = new MotorExample();
-        }else {
-            motorMech = new Mechanism("motorMech");
-        }
-        if(hardwareStates.get("slidesMech").isEnabled){
-            slideMech = new RunToPosMotorExample();
-        }else{
-            servoMech = new Mechanism("slidesMech");
-        }
-        if(hardwareStates.get("servoMech").isEnabled){
-            servoMech = new ServoExample();
-        }else{
-            servoMech = new Mechanism("servoMech");
-        }
+        drivetrain = new Drivetrain();
     }
 
     @Override
