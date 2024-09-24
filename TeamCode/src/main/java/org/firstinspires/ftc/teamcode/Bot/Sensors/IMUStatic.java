@@ -15,13 +15,28 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class IMUStatic {
     private static com.qualcomm.robotcore.hardware.IMU sensor;
-    public IMUStatic(String name, ImuOrientationOnRobot orientation){
-        sensor = hardwareMap.get(IMU.class, name);
-        sensor.initialize(new IMU.Parameters(orientation));
-    }
-    public IMUStatic(){
 
+    private static ImuOrientationOnRobot IMUOrientation = new ImuOrientationOnRobot() {
+        @Override
+        public Quaternion imuCoordinateSystemOrientationFromPerspectiveOfRobot() {
+            return new Quaternion(1, 0, 0, 0, 0);
+        }
+
+        @Override
+        public Quaternion imuRotationOffset() {
+            return new Quaternion(1,0,0,0,0);
+        }
+
+        @Override
+        public Quaternion angularVelocityTransform() {
+            return null;
+        }
+    };
+    public IMUStatic(){
+        sensor = hardwareMap.get(IMU.class, "Imu");
+        sensor.initialize(new IMU.Parameters(IMUOrientation));
     }
+
     public void resetYaw(){
         sensor.resetYaw();
     }
@@ -45,5 +60,8 @@ public class IMUStatic {
     }
     public Quaternion getRobotOrientationAsQuaternion(){
         return sensor.getRobotOrientationAsQuaternion();
+    }
+    public ImuOrientationOnRobot IMUOrientationOnBot(){
+        return IMUOrientation;
     }
 }

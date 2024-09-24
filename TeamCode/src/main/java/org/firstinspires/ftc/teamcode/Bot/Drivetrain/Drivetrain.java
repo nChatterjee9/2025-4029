@@ -1,89 +1,101 @@
 package org.firstinspires.ftc.teamcode.Bot.Drivetrain;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
+import org.firstinspires.ftc.teamcode.Bot.Sensors.IMUStatic;
 import org.firstinspires.ftc.teamcode.Bot.Setup;
 import org.firstinspires.ftc.teamcode.PedroPathing.follower.Follower;
+import org.firstinspires.ftc.teamcode.PedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.PedroPathing.localization.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.MathFunctions;
-import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
 
 public class Drivetrain {
-    public Pose2d currentPos;
-
-    protected DcMotorEx leftFront;
-    protected DcMotorEx rightFront;
-    protected DcMotorEx leftRear;
-    protected DcMotorEx rightRear;
-
-    private Vector driveVector;
-    private Vector headingVector;
-    private Follower follower;
-
-    private IMU imu;
-    private VoltageSensor batteryVoltageSensor;
-
-    private List<Integer> lastEncPositions = new ArrayList<>();
-    private List<Integer> lastEncVels = new ArrayList<>();
+    public Pose currentPos;
+    public Vector targetDriveVector;
+    public Vector targetHeadingVector;
+    public double[] teleOpTargets;
+    protected Follower follower;
+    private IMUStatic imu;
+    protected double imuOffset;
 
 
-    public Drivetrain(HardwareMap hardwareMap){
-        follower = new Follower(hardwareMap, false);
-
-        driveVector = new Vector();
-        headingVector = new Vector();
-
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        rightRear.setDirection(DcMotorEx.Direction.REVERSE); // rightRear, rightFront reverse for comp bot
-        rightFront.setDirection(DcMotorEx.Direction.REVERSE); // rightRear, leftRear reverse for test bot
+    public Drivetrain(){
     }
 
-    public void init(Pose2d startPose) {
+    public void init(Pose startPose) {
         currentPos = startPose;
+        follower = new Follower(Setup.hardwareMap);
+        follower.setStartingPose(startPose);
+        targetDriveVector = new Vector();
+        targetHeadingVector = new Vector();
+        teleOpTargets = new double[3];
+        imu = new IMUStatic();
     }
-    public void update(double x, double y){
-        driveVector.setOrthogonalComponents(-y, -x);
-        driveVector.setMagnitude(MathFunctions.clamp(driveVector.getMagnitude(), 0, 1));
-        driveVector.rotateVector(follower.getPose().getHeading());
 
-        headingVector.setComponents(-x, follower.getPose().getHeading());
-
-        follower.setMovementVectors(follower.getCentripetalForceCorrection(), headingVector, driveVector);
-        follower.update();
+    public void update(boolean usePeP){
+        if(usePeP){
+            follower.setMovementVectors(follower.getCentripetalForceCorrection(), targetHeadingVector, targetDriveVector);
+            follower.update();
+        }else{
+            double x = teleOpTargets[0];
+            double y = teleOpTargets[1];
+            double spin = teleOpTargets[2];
+            follower.setMotorPowers(Range.clip(y + x, -1, 1) + spin,
+                    Range.clip(y - x, -1, 1) + spin,
+                    Range.clip(y + x, -1, 1) - spin,
+                    Range.clip(y - x, -1, 1) - spin);
+        }
     }
+
     public void telemetry(){
         Setup.telemetry.addData("Drivetrain currentPos", currentPos);
     }
 
-    public double getHeadingIMU() {
-        return 0;
+    public void setTargetVectors(double x, double y, double theta){
+        targetDriveVector.setOrthogonalComponents(-y, -x);
+        targetDriveVector.setMagnitude(MathFunctions.clamp(targetDriveVector.getMagnitude(), 0, 1));
+        targetDriveVector.rotateVector(follower.getPose().getHeading());
+
+        targetHeadingVector.setComponents(-theta, follower.getPose().getHeading());
     }
-    public void setCurrentPose(Pose2d pose) {
-        currentPos = pose;
+    public void setTeleOpTargets(double x, double y, double theta){
+        double target_x = Math.abs(x)>0.04 ? x : 0;
+        double target_y = Math.abs(y)>0.04 ? -y : 0;
+        double target_spin = Math.abs(theta) > 0.04 ? theta : 0;
+        double translateMag = Math.sqrt(x*x + y*y);
+        double angle = Math.atan2(y, x);
+
+        angle += (-this.getHeadingIMU() + imuOffset);
+
+
+        target_x = Math.cos(angle) * translateMag;
+        target_y = Math.sin(angle) * translateMag;
+
+        teleOpTargets[0] = target_x;
+        teleOpTargets[1] = target_y;
+        teleOpTargets[2] = target_spin;
     }
-    public Pose2d getCurrentPose() {
-        return currentPos;
-    }
+
+
+    public double getHeadingIMU() {return imu.getYaw(AngleUnit.RADIANS);}
+    public void resetIMU(){imu.resetYaw();}
+
 }

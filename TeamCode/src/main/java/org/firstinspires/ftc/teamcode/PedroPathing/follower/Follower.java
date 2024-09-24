@@ -932,4 +932,11 @@ public class Follower {
     public DashboardPoseTracker getDashboardPoseTracker() {
         return dashboardPoseTracker;
     }
+
+    public void setMotorPowers(double vLeftFront, double vLeftRear, double vRightRear, double vRightFront) {
+        leftFront.setPower(vLeftFront);
+        leftRear.setPower(vLeftRear);
+        rightRear.setPower(vRightRear);
+        rightFront.setPower(vRightFront);
+    }
 }
