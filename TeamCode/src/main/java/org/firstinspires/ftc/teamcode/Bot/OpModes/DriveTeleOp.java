@@ -11,10 +11,11 @@ import org.firstinspires.ftc.teamcode.PedroPathing.localization.Pose;
 
 public class DriveTeleOp extends LinearOpMode {
     Drivetrain drivetrain;
-
+    Setup setup;
     @Override
     public void runOpMode(){
         drivetrain = new Drivetrain();
+        setup = new Setup(hardwareMap, telemetry, true, this, Setup.OpModeType.TELEOP, Setup.Team.Q1);
         drivetrain.init(new Pose());
 
         telemetry.addData("Status", "Initialized");
