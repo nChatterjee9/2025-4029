@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.Bot.OpModes;
 
-import android.security.keystore.StrongBoxUnavailableException;
-
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -21,7 +18,7 @@ public class DriveTeleOp extends LinearOpMode {
     public void runOpMode(){
         setup = new Setup(hardwareMap, telemetry, true, this, Setup.OpModeType.TELEOP, Setup.Team.Q1);
         bot = new Bot(Setup.mechStates, Setup.sensorStates);
-        bot.drivetrain.init(new Pose());
+        bot.initDrivetrain(new Pose());
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

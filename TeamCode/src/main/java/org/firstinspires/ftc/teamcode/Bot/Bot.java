@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Bot.Mechanisms.RunToPosMotorExample;
 import org.firstinspires.ftc.teamcode.Bot.Mechanisms.ServoExample;
 import org.firstinspires.ftc.teamcode.Bot.Sensors.Sensors;
 import org.firstinspires.ftc.teamcode.Bot.InitStates.HardwareStates;
+import org.firstinspires.ftc.teamcode.PedroPathing.localization.Pose;
 
 import java.util.HashMap;
 
@@ -21,7 +22,25 @@ public class Bot implements Robot{
         /*
         Bot constructor creates all mechanisms in Mechanism objects if they are enabled
          */
+        if(hardwareStates.get("motorMech").isEnabled){
+            motorMech = new Mechanism("motorMech"); //todo, replace
+        } else {
+            motorMech = new Mechanism("motorMech");
+        }
+        if(hardwareStates.get("servoMech").isEnabled){
+            servoMech = new Mechanism("servoMech"); //todo, replace
+        } else {
+            servoMech = new Mechanism("servoMech");
+        }
+        if(hardwareStates.get("servoMech").isEnabled){
+            slideMech = new Mechanism("slideMech"); //todo, replace
+        } else {
+            slideMech = new Mechanism("slideMech");
+        }
         drivetrain = new Drivetrain();
+    }
+    public void initDrivetrain(Pose pose){
+        drivetrain.init(pose);
     }
 
     @Override
