@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Bot;
 
+import static org.firstinspires.ftc.teamcode.Bot.Setup.telemetry;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Bot.Drivetrain.Drivetrain;
@@ -22,27 +24,26 @@ public class Bot implements Robot{
         /*
         Bot constructor creates all mechanisms in Mechanism objects if they are enabled
          */
-        if(hardwareStates.get("motorMech").isEnabled){
-            motorMech = new Mechanism("motorMech"); //todo, replace
+        telemetry.addLine("BOTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+        if(hardwareStates.get("intakeMotor").isEnabled){
+            motorMech = new Mechanism("intakeMotor"); //todo, replace
         } else {
-            motorMech = new Mechanism("motorMech");
-        }
-        if(hardwareStates.get("servoMech").isEnabled){
-            servoMech = new Mechanism("servoMech"); //todo, replace
-        } else {
-            servoMech = new Mechanism("servoMech");
-        }
-        if(hardwareStates.get("servoMech").isEnabled){
-            slideMech = new Mechanism("slideMech"); //todo, replace
-        } else {
-            slideMech = new Mechanism("slideMech");
+            motorMech = new Mechanism("intakeMotor");
         }
         drivetrain = new Drivetrain();
+        init();
+
     }
     public void initDrivetrain(Pose pose){
-        drivetrain.init(pose);
+        if(drivetrain != null) {
+            drivetrain.init(pose);
+        } else {
+//            telemetry.addLine("");
+        }
     }
-
+    public void drivetrainUpdate(boolean usePeP){
+        drivetrain.update(usePeP);
+    }
     @Override
     public void init(){
         /*
@@ -50,9 +51,10 @@ public class Bot implements Robot{
         */
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
-        motorMech.init(0);
-        servoMech.init(0);
-        slideMech.init(0);
+//        motorMech.init(0);
+        initDrivetrain(new Pose());
+//        servoMech.init(0);
+//        slideMech.init(0);
 //        drivetrain.init();
     }
 
@@ -78,6 +80,12 @@ public class Bot implements Robot{
     @Override
     public boolean isBusy(){
         return motorMech.isBusy() || servoMech.isBusy() || slideMech.isBusy();
+    }
+    public void setTargetVectors(double x, double y, double theta){
+        drivetrain.setTargetVectors(x,y,theta);
+    }
+    public void setTeleOpTargets(double left_stick_x, double left_stick_y, double right_stick_x){
+        drivetrain.setTeleOpTargets(left_stick_x, left_stick_y, right_stick_x);
     }
 
 }

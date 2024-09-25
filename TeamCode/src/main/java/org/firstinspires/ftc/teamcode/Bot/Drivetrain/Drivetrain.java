@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Bot.Drivetrain;
 
+import static org.firstinspires.ftc.teamcode.Bot.Setup.telemetry;
+
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -42,12 +44,13 @@ public class Drivetrain {
 
     public void init(Pose startPose) {
         currentPos = startPose;
-        follower = new Follower(Setup.hardwareMap);
+        follower = new Follower(Setup.hardwareMap, false);
         follower.setStartingPose(startPose);
         targetDriveVector = new Vector();
         targetHeadingVector = new Vector();
         teleOpTargets = new double[3];
         imu = new IMUStatic();
+        telemetry.addLine("Follower: " + follower.driveError);
     }
 
     public void update(boolean usePeP){
@@ -66,15 +69,25 @@ public class Drivetrain {
     }
 
     public void telemetry(){
-        Setup.telemetry.addData("Drivetrain currentPos", currentPos);
+        telemetry.addData("Drivetrain currentPos", currentPos);
     }
 
     public void setTargetVectors(double x, double y, double theta){
-        targetDriveVector.setOrthogonalComponents(-y, -x);
-        targetDriveVector.setMagnitude(MathFunctions.clamp(targetDriveVector.getMagnitude(), 0, 1));
-        targetDriveVector.rotateVector(follower.getPose().getHeading());
+        double target_spin = Math.abs(theta) > 0.04 ? theta : 0;
+        double translateMag = Math.sqrt(x*x + y*y);
+        double angle = Math.atan2(y, x);
 
-        targetHeadingVector.setComponents(-theta, follower.getPose().getHeading());
+        angle += (-imu.getYaw(AngleUnit.RADIANS));
+        x = Math.cos(angle) * translateMag;
+        y = Math.sin(angle) * translateMag;
+        targetDriveVector.setOrthogonalComponents(x,y);
+//        targetDriveVector.setMagnitude(translateMag);
+//        targetDriveVector.setTheta(angle);
+//        targetDriveVector.setOrthogonalComponents(-y, -x);
+        targetDriveVector.setMagnitude(MathFunctions.clamp(targetDriveVector.getMagnitude(), 0, 1));
+        targetDriveVector.rotateVector(angle); //follower.getPose().getHeading()
+
+        targetHeadingVector.setComponents(theta, follower.getPose().getHeading());
     }
     public void setTeleOpTargets(double x, double y, double theta){
         double target_x = Math.abs(x)>0.04 ? x : 0;

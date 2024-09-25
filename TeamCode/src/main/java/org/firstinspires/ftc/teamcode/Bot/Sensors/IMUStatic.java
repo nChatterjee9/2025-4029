@@ -33,7 +33,7 @@ public class IMUStatic {
         }
     };
     public IMUStatic(){
-        sensor = hardwareMap.get(IMU.class, "Imu");
+        sensor = hardwareMap.get(IMU.class, "imu");
         sensor.initialize(new IMU.Parameters(IMUOrientation));
     }
 
