@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Bot.Sensors;
 
 import static org.firstinspires.ftc.teamcode.Bot.Setup.hardwareMap;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 
@@ -15,26 +16,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class IMUStatic {
     private static com.qualcomm.robotcore.hardware.IMU sensor;
-
-    private static ImuOrientationOnRobot IMUOrientation = new ImuOrientationOnRobot() {
-        @Override
-        public Quaternion imuCoordinateSystemOrientationFromPerspectiveOfRobot() {
-            return new Quaternion(1, 0, 0, 0, 0);
-        }
-
-        @Override
-        public Quaternion imuRotationOffset() {
-            return new Quaternion(1,0,0,0,0);
-        }
-
-        @Override
-        public Quaternion angularVelocityTransform() {
-            return null;
-        }
-    };
     public IMUStatic(){
         sensor = hardwareMap.get(IMU.class, "imu");
-        sensor.initialize(new IMU.Parameters(IMUOrientation));
+        sensor.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(new Orientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES,90,240,90,0))));
     }
 
     public void resetYaw(){
@@ -61,7 +45,7 @@ public class IMUStatic {
     public Quaternion getRobotOrientationAsQuaternion(){
         return sensor.getRobotOrientationAsQuaternion();
     }
-    public ImuOrientationOnRobot IMUOrientationOnBot(){
-        return IMUOrientation;
-    }
+//    public ImuOrientationOnRobot IMUOrientationOnBot(){
+//        return IMUOrientation;
+//    }
 }

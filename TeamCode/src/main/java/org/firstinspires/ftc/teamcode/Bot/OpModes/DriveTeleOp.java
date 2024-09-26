@@ -31,7 +31,8 @@ public class DriveTeleOp extends LinearOpMode {
 
             while (opModeIsActive()) {
                 drive();
-                bot.drivetrainUpdate(true);
+//                driveUsingPeP();
+                bot.drivetrain.update(true);
                 bot.drivetrain.telemetry();
                 if(gamepad1.right_bumper){
                     imu.resetYaw();
@@ -55,7 +56,7 @@ public class DriveTeleOp extends LinearOpMode {
         bot.setTargetVectors(x, y, spin);
     }
     void driveUsingPeP(){
-        bot.setTeleOpTargets(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        bot.setTeleOpTargets(-gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
     }
 
 }

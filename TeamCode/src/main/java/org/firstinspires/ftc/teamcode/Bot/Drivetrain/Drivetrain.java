@@ -72,22 +72,18 @@ public class Drivetrain {
         telemetry.addData("Drivetrain currentPos", currentPos);
     }
 
-    public void setTargetVectors(double x, double y, double theta){
-        double target_spin = Math.abs(theta) > 0.04 ? theta : 0;
-        double translateMag = Math.sqrt(x*x + y*y);
-        double angle = Math.atan2(y, x);
-
-        angle += (-imu.getYaw(AngleUnit.RADIANS));
-        x = Math.cos(angle) * translateMag;
-        y = Math.sin(angle) * translateMag;
-        targetDriveVector.setOrthogonalComponents(x,y);
-//        targetDriveVector.setMagnitude(translateMag);
-//        targetDriveVector.setTheta(angle);
+    public void setTargetVectors(double x, double y, double turn){
+        double theta = (imu.getYaw(AngleUnit.RADIANS));
+        x = MathFunctions.clamp(x,0,1);
+        y = MathFunctions.clamp(y,0,1);
+        double[] coordinates = CartesianToPolar(x,y);
+        coordinates[1] += theta;
+        targetDriveVector.setMagnitude(coordinates[0]);
+        targetDriveVector.setTheta(coordinates[1]);
 //        targetDriveVector.setOrthogonalComponents(-y, -x);
-        targetDriveVector.setMagnitude(MathFunctions.clamp(targetDriveVector.getMagnitude(), 0, 1));
-        targetDriveVector.rotateVector(angle); //follower.getPose().getHeading()
-
-        targetHeadingVector.setComponents(theta, follower.getPose().getHeading());
+//        targetDriveVector.setMagnitude(MathFunctions.clamp(targetDriveVector.getMagnitude(), 0, 1));
+//        targetDriveVector.rotateVector(follower.getPose().getHeading());
+        targetHeadingVector.setComponents(turn, follower.getPose().getHeading());
     }
     public void setTeleOpTargets(double x, double y, double theta){
         double target_x = Math.abs(x)>0.04 ? x : 0;
@@ -106,6 +102,14 @@ public class Drivetrain {
         teleOpTargets[1] = target_y;
         teleOpTargets[2] = target_spin;
     }
+
+
+    public double[] CartesianToPolar(double x, double y) {
+        return new double[]{Math.sqrt(x * x + y * y), Math.atan2(y, x)};
+    }
+//    private double[] PolarToCartesian(double r, double theta){
+//        return new double[]{};
+//    }
 
 
     public double getHeadingIMU() {return imu.getYaw(AngleUnit.RADIANS);}
