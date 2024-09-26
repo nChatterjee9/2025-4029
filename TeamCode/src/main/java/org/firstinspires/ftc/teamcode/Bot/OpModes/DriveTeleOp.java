@@ -32,6 +32,7 @@ public class DriveTeleOp extends LinearOpMode {
     double x, y, spin;
     void drive(){
         x = Math.abs(gamepad1.left_stick_x)>0.04 ? gamepad1.left_stick_x : 0;
+
         y = Math.abs(gamepad1.left_stick_y)>0.04 ? -gamepad1.left_stick_y : 0;
         spin = Math.abs(gamepad1.right_stick_x) > 0.04 ? gamepad1.right_stick_x : 0;
 
