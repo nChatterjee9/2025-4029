@@ -30,10 +30,19 @@ public class Contour extends OpenCvPipeline {
     private Scalar upperBlue = new Scalar(142,211,186);
     private Scalar lowerBlue = new Scalar(82,130,31);
 
+    private Point centerPoint = new Point(640,360);
+    private double minBoxSize = 1000.0;
 
-
+    public void init(){
+        HSV = new Mat();
+        red = new Mat();
+        red2 = new Mat();
+        blue = new Mat();
+        dummy = new Mat();
+    }
     @Override
     public Mat processFrame(Mat input) {
+        if(input == null) return null;
         Imgproc.cvtColor(input, HSV, Imgproc.COLOR_RGB2HSV);
 
         Core.inRange(HSV, lowerBlue, upperBlue, blue);
@@ -48,29 +57,38 @@ public class Contour extends OpenCvPipeline {
         } else {
             Imgproc.findContours(red, contours, dummy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         }
-        int currentArrayPos = 0;
-        int biggestBox = 0;
-        int biggestBoxSize = -1;
-        Rect boundingRect;
-        for(MatOfPoint contour : contours){
-            boundingRect = Imgproc.boundingRect(contour);
+        if(contours.size() != 0) {
+            int currentArrayPos = 0;
+            int biggestBox = 0;
+            int biggestBoxSize = -1;
+            Rect boundingRect;
 
-            if(boundingRect.height * boundingRect.width > biggestBoxSize){
-                biggestBox = currentArrayPos;
-                biggestBoxSize = boundingRect.height * boundingRect.width;
+            for (MatOfPoint contour : contours) {
+                boundingRect = Imgproc.boundingRect(contour);
+
+                if (boundingRect.height * boundingRect.width > biggestBoxSize && boundingRect.height * boundingRect.width > minBoxSize) {
+                    biggestBox = currentArrayPos;
+                    biggestBoxSize = boundingRect.height * boundingRect.width;
+                }
+
+                currentArrayPos++;
             }
 
-            currentArrayPos++;
+            boundingRect = Imgproc.boundingRect(contours.get(biggestBox));
+            Imgproc.rectangle(HSV, boundingRect.tl(), boundingRect.br(), new Scalar(0, 0, 255), 2);
+            centerPoint = new Point(boundingRect.tl().x + boundingRect.width / 2, boundingRect.tl().y + boundingRect.height / 2);
+            Imgproc.circle(HSV, centerPoint, 10, new Scalar(0, 0, 255), 2);
+
+            Imgproc.cvtColor(HSV, input, Imgproc.COLOR_HSV2RGB);
+
+        } else {
+            centerPoint = new Point(640, 360);
         }
-
-        boundingRect = Imgproc.boundingRect(contours.get(biggestBox));
-        Imgproc.rectangle(HSV, boundingRect.tl(), boundingRect.br(), new Scalar(0, 0, 255), 2);
-        Imgproc.circle(HSV, new Point(boundingRect.tl().x + boundingRect.width/2, boundingRect.tl().y + boundingRect.height/2), 10, new Scalar(0,0,255), 2);
-
-        Imgproc.cvtColor(HSV, input, Imgproc.COLOR_HSV2RGB);
-
-
         return input;
+    }
+
+    public Point getCenterPoint(){
+        return centerPoint;
     }
 
 }
