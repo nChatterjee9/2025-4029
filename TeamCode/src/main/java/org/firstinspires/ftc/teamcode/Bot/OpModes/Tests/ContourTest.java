@@ -18,6 +18,7 @@ public class ContourTest extends LinearOpMode {
     private Point centerPoint;
 
     private final double turnSpeed = 0.25;
+    private final double moveSpeed = 0.05;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,13 +52,14 @@ public class ContourTest extends LinearOpMode {
 
     private void moveBot(Contour contour, Drivetrain drivetrain){
         centerPoint = contour.getCenterPoint();
-        int distance = (int)centerPoint.x - 1280/2;
-        if(Math.abs(distance) > 20) {
-            drivetrain.setTeleOpTargets(0, 0, -distance / 640.0 * turnSpeed);
-            telemetry.addLine("Center Point: " + -distance / 640.0);
+        int distanceRot = (int)centerPoint.x - 1280/2;
+        int distance = (int)centerPoint.y - 720/2;
+        if(Math.abs(distanceRot) > 20) {
+            drivetrain.setTeleOpTargets(0, 0, -distanceRot / 640.0 * turnSpeed);
+            telemetry.addLine("Center Point: " + -distanceRot / 640.0);
             telemetry.update();
-        } else {
-            drivetrain.setTeleOpTargets(0, 0, 0);
+        } else if(Math.abs(distance) > 20){
+            drivetrain.localMovement(distance / 360.0 * moveSpeed, 0);
         }
         drivetrain.update(false);
 

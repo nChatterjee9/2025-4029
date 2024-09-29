@@ -76,6 +76,11 @@ public class Drivetrain {
 
         targetHeadingVector.setComponents(-theta, follower.getPose().getHeading());
     }
+    public void localMovement(double x, double y){
+        teleOpTargets[0] = x;
+        teleOpTargets[1] = y;
+        teleOpTargets[2] = 0;
+    }
     public void setTeleOpTargets(double x, double y, double theta){
         double target_x = Math.abs(x)>0.04 ? x : 0;
         double target_y = Math.abs(y)>0.04 ? -y : 0;
