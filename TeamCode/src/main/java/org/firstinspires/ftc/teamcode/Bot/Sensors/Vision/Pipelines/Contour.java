@@ -84,14 +84,17 @@ public class Contour extends OpenCvPipeline {
                 }
                 currentArrayPos++;
             }
+            if(biggestBoxSize != -1) {
+                Rect boundingRect = Imgproc.boundingRect(contours.get(biggestBox));
+                Imgproc.putText(HSV, "Detected Area: " + biggestBoxSize, new Point(boundingRect.tl().x, boundingRect.tl().y + boundingRect.height), 2, 1, outlines);
+                Imgproc.rectangle(HSV, boundingRect.tl(), boundingRect.br(), outlines, 2);
+                centerPoint = new Point(boundingRect.tl().x + boundingRect.width / 2, boundingRect.tl().y + boundingRect.height / 2);
+                Imgproc.circle(HSV, centerPoint, 10, outlines, 2);
 
-            Rect boundingRect = Imgproc.boundingRect(contours.get(biggestBox));
-            Imgproc.putText(HSV, "Detected Area: " + biggestBoxSize, new Point(boundingRect.tl().x,boundingRect.tl().y-boundingRect.height), 2, 12, outlines);
-            Imgproc.rectangle(HSV, boundingRect.tl(), boundingRect.br(), outlines, 2);
-            centerPoint = new Point(boundingRect.tl().x + boundingRect.width / 2, boundingRect.tl().y + boundingRect.height / 2);
-            Imgproc.circle(HSV, centerPoint, 10, outlines, 2);
-
-            Imgproc.cvtColor(HSV, input, Imgproc.COLOR_HSV2RGB);
+                Imgproc.cvtColor(HSV, input, Imgproc.COLOR_HSV2RGB);
+            } else {
+                centerPoint = new Point(640, 360);
+            }
 
         } else {
             centerPoint = new Point(640, 360);
