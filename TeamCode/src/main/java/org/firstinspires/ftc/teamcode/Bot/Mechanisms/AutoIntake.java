@@ -1,32 +1,35 @@
-package org.firstinspires.ftc.teamcode.Bot.OpModes.Tests;
+package org.firstinspires.ftc.teamcode.Bot.Mechanisms;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import static org.firstinspires.ftc.teamcode.Bot.Setup.hardwareMap;
+import static org.firstinspires.ftc.teamcode.Bot.Setup.telemetry;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Bot.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.Bot.Sensors.Vision.Pipelines.Contour;
-import org.firstinspires.ftc.teamcode.Bot.Setup;
-import org.firstinspires.ftc.teamcode.PedroPathing.localization.Pose;
 import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-@TeleOp(name = "Contour vision test", group = "1")
-public class ContourTest extends LinearOpMode {
+
+public class AutoIntake {
+
+    private OpenCvCamera webcam;
+    private boolean isBlue;
+    private Drivetrain drivetrain;
+    private Contour pipeline;
+    //0 IS IN INTAKE, 1 IS AT TRANSFER
+    private boolean[] intakeSensors = new boolean[2];
     private Point centerPoint;
+    private boolean properInitialization = true;
 
     private final double turnSpeed = 0.25;
     private final double moveSpeed = 0.05;
+    private final double intakeSpeed = 0.1;
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        Contour contour = new Contour();
-        contour.init(false);
+    public AutoIntake(boolean isBlue, String webcamName, Drivetrain drivetrain){
         int cameraMoniterViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMoniterViewId);
-//        webcam.setMillisecondsPermissionTimeout(2500);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -35,36 +38,56 @@ public class ContourTest extends LinearOpMode {
 
             @Override
             public void onError(int errorCode) {
-
+                properInitialization = false;
+                telemetry.addLine("WEBCAM ERROR!!! Code: " + errorCode);
             }
         });
-        webcam.setPipeline(contour);
-        Drivetrain drivetrain = new Drivetrain();
-        Setup setup = new Setup(hardwareMap, telemetry, true, this, Setup.OpModeType.TELEOP, Setup.Team.Q1);
-        drivetrain.init(new Pose());
-        while(opModeInInit()){
-            moveBot(contour, drivetrain);
-        }
-        webcam.closeCameraDeviceAsync(() -> {
-            webcam.stopStreaming();
-        });
+        webcam.setPipeline(pipeline);
+        //todo INTAKE SENSORS
     }
 
-    private void moveBot(Contour contour, Drivetrain drivetrain){
-        centerPoint = contour.getCenterPoint();
+    public boolean intake(){
+        if(properInitialization) {
+            if (intakeSensors[1]) return true;
+            centerPoint = pipeline.getCenterPoint();
+            moveBot(centerPoint, drivetrain);
+            return false;
+        } else {
+            telemetry.addLine("WEBCAM INITIALIZATION ERROR!");
+            return true;
+        }
+    }
+
+    private void moveBot(Point centerPoint, Drivetrain drivetrain){
         int distanceRot = (int)centerPoint.x - 1280/2;
         int distance = (int)centerPoint.y - 720/2;
         if(Math.abs(distanceRot) > 20) {
+            intakeMechanism(-1);
             drivetrain.setTeleOpTargets(0, 0, -distanceRot / 640.0 * turnSpeed);
             telemetry.addLine("Center Point: " + -distanceRot / 640.0);
             telemetry.update();
         } else if(Math.abs(distance) > 20){
+            intakeMechanism(-1);
             drivetrain.localMovement(distance / 360.0 * moveSpeed, 0);
-        } else {
+        } else if(intakeSensors[0]){
+            intakeMechanism(0);
             drivetrain.setTeleOpTargets(0,0,0);
+        } else {
+            intakeMechanism(1);
+            drivetrain.localMovement(intakeSpeed,0);
         }
         drivetrain.update(false);
+    }
 
+    private void detectIntake(){
+        //todo INTAKE SENSORS
+    }
 
+    private void intakeMechanism(int intake){
+        if((intakeSensors[0] && !intakeSensors[1]) || intake > 0){
+            //todo INTAKE ON
+        } else if(intakeSensors[1] || intake < 0){
+            //todo INTAKE OFF
+        }
     }
 }

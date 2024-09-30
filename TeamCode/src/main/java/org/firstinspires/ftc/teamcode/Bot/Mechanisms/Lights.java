@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Bot.Mechanisms;
 
-import static org.firstinspires.ftc.teamcode.Bot.Setup.hardwareMap;
-
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import org.firstinspires.ftc.teamcode.Bot.Sensors.LightStrip;

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Contour extends OpenCvPipeline {
 
-    public boolean isBlue = false;
+    private boolean isBlue;
 
     private Mat HSV;
     private Mat red;
@@ -30,26 +30,40 @@ public class Contour extends OpenCvPipeline {
     private Scalar upperBlue = new Scalar(142,211,186);
     private Scalar lowerBlue = new Scalar(82,130,31);
 
+    private Scalar outlines = new Scalar(0, 0, 255);
+
     private Point centerPoint = new Point(640,360);
     private double minBoxSize = 1000.0;
 
-    public void init(){
+    private int currentArrayPos;
+    private int biggestBox;
+    private double biggestBoxSize;
+    private double currentArea;
+
+    public void init(boolean isBlue){
         HSV = new Mat();
-        red = new Mat();
-        red2 = new Mat();
-        blue = new Mat();
+        if(isBlue) {
+            blue = new Mat();
+        } else {
+            red = new Mat();
+            red2 = new Mat();
+        }
         dummy = new Mat();
+        this.isBlue = isBlue;
     }
     @Override
     public Mat processFrame(Mat input) {
         if(input == null) return null;
         Imgproc.cvtColor(input, HSV, Imgproc.COLOR_RGB2HSV);
+        if(isBlue) {
+            Core.inRange(HSV, lowerBlue, upperBlue, blue);
+        } else {
+            Core.inRange(HSV, lowerRed, upperRed, red);
+            Core.inRange(HSV, lowerRed2, upperRed2, red2);
 
-        Core.inRange(HSV, lowerBlue, upperBlue, blue);
-        Core.inRange(HSV, lowerRed, upperRed, red);
-        Core.inRange(HSV, lowerRed2, upperRed2, red2);
+            Core.add(red, red2, red);
+        }
 
-        Core.add(red, red2, red);
 
         List<MatOfPoint> contours = new ArrayList<>();
         if(isBlue){
@@ -57,27 +71,25 @@ public class Contour extends OpenCvPipeline {
         } else {
             Imgproc.findContours(red, contours, dummy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         }
-        if(contours.size() != 0) {
-            int currentArrayPos = 0;
-            int biggestBox = 0;
-            int biggestBoxSize = -1;
-            Rect boundingRect;
-
+        if(!contours.isEmpty()) {
+            currentArrayPos = 0;
+            biggestBox = 0;
+            biggestBoxSize = -1;
+            currentArea = -1;
             for (MatOfPoint contour : contours) {
-                boundingRect = Imgproc.boundingRect(contour);
-
-                if (boundingRect.height * boundingRect.width > biggestBoxSize && boundingRect.height * boundingRect.width > minBoxSize) {
+                currentArea = Imgproc.contourArea(contour);
+                if (currentArea > biggestBoxSize && currentArea > minBoxSize) {
                     biggestBox = currentArrayPos;
-                    biggestBoxSize = boundingRect.height * boundingRect.width;
+                    biggestBoxSize = currentArea;
                 }
-
                 currentArrayPos++;
             }
 
-            boundingRect = Imgproc.boundingRect(contours.get(biggestBox));
-            Imgproc.rectangle(HSV, boundingRect.tl(), boundingRect.br(), new Scalar(0, 0, 255), 2);
+            Rect boundingRect = Imgproc.boundingRect(contours.get(biggestBox));
+            Imgproc.putText(HSV, "Detected Area: " + biggestBoxSize, new Point(boundingRect.tl().x,boundingRect.tl().y-boundingRect.height), 2, 12, outlines);
+            Imgproc.rectangle(HSV, boundingRect.tl(), boundingRect.br(), outlines, 2);
             centerPoint = new Point(boundingRect.tl().x + boundingRect.width / 2, boundingRect.tl().y + boundingRect.height / 2);
-            Imgproc.circle(HSV, centerPoint, 10, new Scalar(0, 0, 255), 2);
+            Imgproc.circle(HSV, centerPoint, 10, outlines, 2);
 
             Imgproc.cvtColor(HSV, input, Imgproc.COLOR_HSV2RGB);
 
@@ -86,9 +98,30 @@ public class Contour extends OpenCvPipeline {
         }
         return input;
     }
+    /**
+     * Returns the centerpoint of the largest contour that is detected by the camera.
+     * @return Point centerPoint
+     * */
+    public Point getCenterPoint(){return centerPoint;}
 
-    public Point getCenterPoint(){
-        return centerPoint;
+    /**
+     * Sets the team color, and at the same time initializes the required mats and deletes the mats that are no longer in use.
+     * @param isBlue
+     * */
+    public void team(boolean isBlue){
+        this.isBlue = isBlue;
+        if(isBlue){
+            if(blue == null){
+                blue = new Mat();
+            }
+            red = null;
+            red2 = null;
+        } else {
+            if(red == null){
+                red = new Mat();
+                red2 = new Mat();
+            }
+            blue = null;
+        }
     }
-
 }
