@@ -14,7 +14,7 @@ public class MotorTest extends LinearOpMode {
     private int targetPosition;
     private double velocity = 1;
     private final int INCREMENT = 100;
-    private final double V_INCREMENT = 0.0000001;
+    private final double V_INCREMENT = 0.00000001;
 
     @Override
     public void runOpMode () {
@@ -34,22 +34,26 @@ public class MotorTest extends LinearOpMode {
             }
 
             if (gamepad1.right_stick_y < -0.4) {
-                velocity += V_INCREMENT;
+                velocity=Range.clip(velocity+V_INCREMENT, -1, 1);
             }
             if (gamepad1.right_stick_y > 0.4) {
-                velocity -= V_INCREMENT;
+                velocity=Range.clip(velocity-V_INCREMENT, -1, 1);
             }
 
-            if (gamepad1.left_bumper) {
-                motor.setTargetPosition(targetPosition / INCREMENT);
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motor.setPower(Range.clip(velocity, 0, 1));
+            if(!gamepad1.right_bumper) {
+                if (gamepad1.left_bumper) {
+                    motor.setTargetPosition(targetPosition / INCREMENT);
+                    motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    motor.setPower(Range.clip(velocity, 0, 1));
+                } else{
+                    motor.setPower(0);
+                }
             }
-
-            if (gamepad1.right_bumper) {
+            else if (gamepad1.right_bumper) {
                 motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 motor.setPower(Range.clip(velocity, 0, 1));
             }
+
             telemetry.addData("TargetPosition", targetPosition / INCREMENT);
             telemetry.addData("velocity", velocity);
 
