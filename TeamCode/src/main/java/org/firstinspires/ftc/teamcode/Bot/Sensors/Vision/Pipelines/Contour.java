@@ -93,11 +93,11 @@ public class Contour extends OpenCvPipeline {
 
                 Imgproc.cvtColor(HSV, input, Imgproc.COLOR_HSV2RGB);
             } else {
-                centerPoint = new Point(640, 360);
+                centerPoint = new Point(-1, -1);
             }
 
         } else {
-            centerPoint = new Point(640, 360);
+            centerPoint = new Point(-1, -1);
         }
         return input;
     }

@@ -13,7 +13,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-@TeleOp(name = "Contour vision test", group = "1")
+@TeleOp(name = "Contour vision test (XY)", group = "1")
 public class ContourTest extends LinearOpMode {
     private Point centerPoint;
 
@@ -53,17 +53,18 @@ public class ContourTest extends LinearOpMode {
     private void moveBot(Contour contour, Drivetrain drivetrain){
         centerPoint = contour.getCenterPoint();
         int distanceRot = (int)centerPoint.x - 1280/2;
-        int distance = (int)centerPoint.y - 720/2;
-        if(Math.abs(distanceRot) > 20) {
-            drivetrain.setTeleOpTargets(0, 0, -turnSpeed * Math.signum(distanceRot) - Math.abs(distanceRot/640.0) * turnSpeed/2); //-distanceRot / 640.0 * turnSpeed
+        int distance = (int)centerPoint.y - 720;
+        if(centerPoint.x == -1 && centerPoint.y == -1){
+            drivetrain.setTeleOpTargets(0,0,0);
+        } else { // if(Math.abs(distanceRot) > 20)
+            drivetrain.localMovement(0, (distance/720.0) * moveSpeed, -turnSpeed * Math.signum(distanceRot) - (Math.abs(distanceRot/640.0) * turnSpeed/2)); //-distanceRot / 640.0 * turnSpeed
             telemetry.addLine("Center Point: " + -distanceRot / 640.0);
             telemetry.update();
-        } else if(Math.abs(distance) > 10){
-            drivetrain.localMovement(0, -distance / 360.0 * moveSpeed);
-            telemetry.addLine("FORWARD/BACK MOVEMENT");
-        } else {
-            drivetrain.setTeleOpTargets(0,0,0);
         }
+//        else if(Math.abs(distance) > 10){
+//            drivetrain.localMovement(0, -distance / 360.0 * moveSpeed);
+//            telemetry.addLine("FORWARD/BACK MOVEMENT");
+//        }
         drivetrain.update(false);
 
 
