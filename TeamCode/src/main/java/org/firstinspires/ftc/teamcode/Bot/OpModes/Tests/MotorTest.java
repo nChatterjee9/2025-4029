@@ -14,7 +14,7 @@ public class MotorTest extends LinearOpMode {
     private int targetPosition;
     private double velocity = 1;
     private final int INCREMENT = 100;
-    private final double V_INCREMENT = 0.00000001;
+    private final double V_INCREMENT = 0.00001;
 
     @Override
     public void runOpMode () {
@@ -44,7 +44,7 @@ public class MotorTest extends LinearOpMode {
                 if (gamepad1.left_bumper) {
                     motor.setTargetPosition(targetPosition / INCREMENT);
                     motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    motor.setPower(Range.clip(velocity, 0, 1));
+                    motor.setPower(Range.clip(velocity, -1, 1));
                 } else{
                     motor.setPower(0);
                 }
