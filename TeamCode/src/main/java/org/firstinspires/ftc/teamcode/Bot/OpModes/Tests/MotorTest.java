@@ -14,7 +14,7 @@ public class MotorTest extends LinearOpMode {
     private int targetPosition;
     private double velocity = 1;
     private final int INCREMENT = 100;
-    private final double V_INCREMENT = 0.00001;
+    private int counter = 0;
 
     @Override
     public void runOpMode () {
@@ -32,12 +32,20 @@ public class MotorTest extends LinearOpMode {
             if (gamepad1.left_stick_y > 0.4) {
                 targetPosition -= 1;
             }
-
-            if (gamepad1.right_stick_y < -0.4) {
-                velocity=Range.clip(velocity+V_INCREMENT, -1, 1);
+            if(counter >=60) {
+                if (gamepad1.right_stick_y < -0.4) {
+                    velocity = Range.clip(velocity * (1 / 0.9), -1, 1);
+                }
+                if (gamepad1.right_stick_y > 0.4) {
+                    velocity = velocity * 0.9;
+                }
+                counter =0;
             }
-            if (gamepad1.right_stick_y > 0.4) {
-                velocity=Range.clip(velocity-V_INCREMENT, -1, 1);
+            else{
+                counter++;
+            }
+            if(gamepad1.a){
+                velocity*=-1;
             }
 
             if(!gamepad1.right_bumper) {
@@ -51,7 +59,7 @@ public class MotorTest extends LinearOpMode {
             }
             else if (gamepad1.right_bumper) {
                 motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motor.setPower(Range.clip(velocity, 0, 1));
+                motor.setPower(Range.clip(velocity, -1, 1));
             }
 
             telemetry.addData("TargetPosition", targetPosition / INCREMENT);
