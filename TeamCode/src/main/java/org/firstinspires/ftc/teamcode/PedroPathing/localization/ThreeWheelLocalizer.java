@@ -8,6 +8,9 @@ import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
 import org.firstinspires.ftc.teamcode.PedroPathing.util.NanoTimer;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This is the ThreeWheelLocalizer class. This class extends the Localizer superclass and is a
  * localizer that uses the three wheel odometry set up. The diagram below, which is taken from
@@ -85,9 +88,9 @@ public class ThreeWheelLocalizer extends Localizer {
         strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftFront"));
 
         // TODO: reverse any encoders necessary
-        leftEncoder.setDirection(Encoder.FORWARD);
-        rightEncoder.setDirection(Encoder.REVERSE);
-        strafeEncoder.setDirection(Encoder.FORWARD);
+        leftEncoder.setDirection(1);
+        rightEncoder.setDirection(-1);
+        strafeEncoder.setDirection(1);
 
         setStartPose(setStartPose);
         timer = new NanoTimer();
@@ -96,7 +99,7 @@ public class ThreeWheelLocalizer extends Localizer {
         currentVelocity = new Pose();
         totalHeading = 0;
 
-        resetEncoders();
+//        resetEncoders();
     }
 
     /**
@@ -277,5 +280,10 @@ public class ThreeWheelLocalizer extends Localizer {
      */
     public double getTurningMultiplier() {
         return TURN_TICKS_TO_RADIANS;
+    }
+
+    @Override
+    public List<Double> getWheelPositions(){
+        return Arrays.asList(leftEncoder.getCurrentPosition(), rightEncoder.getCurrentPosition(), strafeEncoder.getCurrentPosition());
     }
 }

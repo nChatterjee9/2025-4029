@@ -8,6 +8,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
 
+import java.util.List;
+
 /**
  * This is the PoseUpdater class. This class handles getting pose data from the localizer and returning
  * the information in a useful way to the Follower.
@@ -334,5 +336,9 @@ public class PoseUpdater {
      */
     public Localizer getLocalizer() {
         return localizer;
+    }
+
+    public List<Double> getWheelPositions(){
+        return localizer.getWheelPositions();
     }
 }

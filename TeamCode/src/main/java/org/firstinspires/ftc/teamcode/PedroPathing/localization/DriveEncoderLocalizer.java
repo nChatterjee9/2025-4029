@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
 import org.firstinspires.ftc.teamcode.PedroPathing.util.NanoTimer;
 
+import java.util.List;
+
 /**
  * This is the DriveEncoderLocalizer class. This class extends the Localizer superclass and is a
  * localizer that uses the drive encoder set up.
@@ -255,5 +257,10 @@ public class DriveEncoderLocalizer extends Localizer { // todo: make drive encod
      */
     public double getTurningMultiplier() {
         return TURN_TICKS_TO_RADIANS;
+    }
+
+    @Override
+    public List<Double> getWheelPositions(){
+        return null;
     }
 }

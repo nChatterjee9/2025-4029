@@ -25,11 +25,11 @@ public class Bot implements Robot{
         Bot constructor creates all mechanisms in Mechanism objects if they are enabled
          */
         telemetry.addLine("BOTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
-        if(hardwareStates.get("intakeMotor").isEnabled){
-            motorMech = new Mechanism("intakeMotor"); //todo, replace
-        } else {
-            motorMech = new Mechanism("intakeMotor");
-        }
+//        if(hardwareStates.get("intakeMotor").isEnabled){
+//            motorMech = new Mechanism("intakeMotor"); //todo, replace
+//        } else {
+//            motorMech = new Mechanism("intakeMotor");
+//        }
         drivetrain = new Drivetrain();
         init();
 

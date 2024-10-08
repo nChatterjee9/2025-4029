@@ -80,4 +80,8 @@ public class Encoder {
     public double getDeltaPosition() {
         return getMultiplier() * (currentPosition - previousPosition);
     }
+
+    public double getCurrentPosition() {
+        return currentPosition;
+    }
 }

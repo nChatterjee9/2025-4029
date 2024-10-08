@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
 import org.firstinspires.ftc.teamcode.PedroPathing.util.NanoTimer;
 
+import java.util.List;
+
 /**
  * This is the TwoWheelLocalizer class. This class extends the Localizer superclass and is a
  * localizer that uses the two wheel odometry with IMU set up. The diagram below, which is taken from
@@ -280,5 +282,10 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
      */
     public double getTurningMultiplier() {
         return 1;
+    }
+
+    @Override
+    public List<Double> getWheelPositions(){
+        return null;
     }
 }

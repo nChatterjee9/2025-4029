@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.PedroPathing.localization;
 
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is the Localizer class. It is an abstract superclass of all localizers used in Pedro Pathing,
  * so it contains abstract methods that will have a concrete implementation in the subclasses. Any
@@ -86,4 +89,6 @@ public abstract class Localizer {
      * @return returns the turning ticks to radians multiplier
      */
     public abstract double getTurningMultiplier();
+
+    public abstract List<Double> getWheelPositions();
 }
