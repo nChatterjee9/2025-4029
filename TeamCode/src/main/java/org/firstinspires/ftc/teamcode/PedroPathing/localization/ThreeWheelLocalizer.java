@@ -89,7 +89,7 @@ public class ThreeWheelLocalizer extends Localizer {
 
         // TODO: reverse any encoders necessary
         leftEncoder.setDirection(1);
-        rightEncoder.setDirection(-1);
+        rightEncoder.setDirection(1);
         strafeEncoder.setDirection(1);
 
         setStartPose(setStartPose);
