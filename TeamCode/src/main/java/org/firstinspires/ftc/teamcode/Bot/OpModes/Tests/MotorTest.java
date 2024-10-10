@@ -43,6 +43,7 @@ public class MotorTest extends LinearOpMode {
             }
             else{
                 counter++;
+
             }
             if(gamepad1.a){
                 velocity*=-1;
