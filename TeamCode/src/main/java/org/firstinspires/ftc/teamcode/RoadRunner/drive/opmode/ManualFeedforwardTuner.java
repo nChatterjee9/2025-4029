@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.PedroPathing.localization.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 
@@ -139,7 +140,8 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     );
                     break;
             }
-
+            telemetry.addLine("LE: " + ThreeWheelLocalizer.LeftEncoderPos + ", RE: " + ThreeWheelLocalizer.RightEncoderPos);
+            telemetry.addLine("Pose: " + drive.getPoseVelocity());
             telemetry.update();
         }
     }

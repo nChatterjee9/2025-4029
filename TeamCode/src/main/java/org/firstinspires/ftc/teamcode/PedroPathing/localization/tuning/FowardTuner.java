@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.PedroPathing.localization.PoseUpdater;
+import org.firstinspires.ftc.teamcode.PedroPathing.localization.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.PedroPathing.util.Drawing;
 
@@ -65,6 +66,9 @@ public class FowardTuner extends OpMode {
         }
         telemetryA.addLine("The multiplier will display what your forward ticks to inches should be to scale your current distance to " + DISTANCE + " inches.");
         telemetryA.addData("multiplier", DISTANCE / (poseUpdater.getPose().getX() / poseUpdater.getLocalizer().getForwardMultiplier()));
+//    telemetryA.addLine("WHEEEEEEEl: " + poseUpdater.getWheelPositions());
+        telemetry.addLine("LE: " + ThreeWheelLocalizer.LeftEncoderPos + ", RE: " + ThreeWheelLocalizer.RightEncoderPos);
+
         telemetryA.update();
 
         Drawing.drawPoseHistory(dashboardPoseTracker, "#4CAF50");
