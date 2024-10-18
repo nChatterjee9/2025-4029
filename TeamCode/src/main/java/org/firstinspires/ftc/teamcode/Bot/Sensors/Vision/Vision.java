@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Bot.Sensors.Vision;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Bot.InitStates.HardwareStates;
 import org.firstinspires.ftc.teamcode.Bot.Sensors.Vision.Processors.ColorProcessor;
+import org.firstinspires.ftc.teamcode.Bot.Sensors.Vision.Processors.ContourProcessor;
 import org.firstinspires.ftc.teamcode.Bot.Setup;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -14,6 +15,8 @@ public class Vision {
     private HashMap<String, HardwareStates> visionStates;
     public AprilTagProcessor aprilTag;
     public ColorProcessor colorProcessor;
+    public ContourProcessor contourProcessor;
+
     public VisionPortal visionPortal;
 
     public Vision(HashMap<String, HardwareStates> sensorStates){
@@ -25,12 +28,15 @@ public class Vision {
 
     public void init(){
         if(this.visionStates.get("webcam").isEnabled){
-            aprilTag = new AprilTagProcessor.Builder().build();
-            colorProcessor = new ColorProcessor();
+//            aprilTag = new AprilTagProcessor.Builder().build();
+//            colorProcessor = new ColorProcessor();
+            contourProcessor = new ContourProcessor();
             visionPortal = new VisionPortal.Builder()
-                    .setCamera(Setup.hardwareMap.get(WebcamName.class, "Webcam 1"))
-                    .addProcessors(colorProcessor, aprilTag)
+                    .setCamera(Setup.hardwareMap.get(WebcamName.class, "webcam"))
+                    .addProcessors(contourProcessor)
                     .build();
+
+
         }
     }
 
