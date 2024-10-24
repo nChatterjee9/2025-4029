@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Bot.Mechanisms.AbstractMechanisms.Mechanis
 import org.firstinspires.ftc.teamcode.Bot.Mechanisms.MotorExample;
 import org.firstinspires.ftc.teamcode.Bot.Mechanisms.RunToPosMotorExample;
 import org.firstinspires.ftc.teamcode.Bot.Mechanisms.ServoExample;
+import org.firstinspires.ftc.teamcode.Bot.Mechanisms.SmartClaw;
 import org.firstinspires.ftc.teamcode.Bot.Sensors.Sensors;
 import org.firstinspires.ftc.teamcode.Bot.InitStates.HardwareStates;
 import org.firstinspires.ftc.teamcode.PedroPathing.localization.Pose;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 
 public class Bot implements Robot{
     public Drivetrain drivetrain;
-    public Mechanism motorMech, servoMech, slideMech;
+    public Mechanism motorMech, servoMech, slideMech, clawRot;
     public Sensors sensors;
 
     public Bot(HashMap<String, HardwareStates> hardwareStates, HashMap<String, HardwareStates> sensorStates){
@@ -29,6 +30,13 @@ public class Bot implements Robot{
             motorMech = new Mechanism("intakeMotor"); //todo, replace
         } else {
             motorMech = new Mechanism("intakeMotor");
+        }
+
+
+        if(hardwareStates.get("ClawRot").isEnabled){
+            clawRot = new SmartClaw();
+        } else {
+            clawRot = new Mechanism("ClawRot");
         }
         drivetrain = new Drivetrain();
         init();

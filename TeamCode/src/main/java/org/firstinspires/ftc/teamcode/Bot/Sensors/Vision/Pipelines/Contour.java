@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.Bot.Sensors.Vision.Pipelines;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Contour extends OpenCvPipeline {
+
+    public static double theta = 0.0;
 
     private boolean isBlue;
 
@@ -85,6 +89,10 @@ public class Contour extends OpenCvPipeline {
                 currentArrayPos++;
             }
             if(biggestBoxSize != -1) {
+                MatOfPoint2f points2f = null;
+                points2f.fromArray(contours.get(biggestBox).toArray());
+                RotatedRect fitBound = Imgproc.minAreaRect(points2f);
+                theta = fitBound.angle;
                 Rect boundingRect = Imgproc.boundingRect(contours.get(biggestBox));
                 Imgproc.putText(HSV, "Detected Area: " + biggestBoxSize, new Point(boundingRect.tl().x, boundingRect.tl().y + boundingRect.height), 2, 1, outlines);
                 Imgproc.rectangle(HSV, boundingRect.tl(), boundingRect.br(), outlines, 2);

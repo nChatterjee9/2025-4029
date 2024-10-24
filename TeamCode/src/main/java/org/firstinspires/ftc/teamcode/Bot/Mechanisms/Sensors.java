@@ -28,6 +28,13 @@ public class Sensors {
         switches = new SensorSwitch[switchSensorLength];
     }
 
+    public Sensors(int colorSensorLength, int distanceSensorLength, int switchSensorLength, boolean invertSwitches){
+        colors = new SensorColor[colorSensorLength];
+        distances = new SensorDistance[distanceSensorLength];
+        switches = new SensorSwitch[switchSensorLength];
+        standardInvertSwitches = invertSwitches;
+    }
+
     /**
      * Adds a sensor to an array sorted by class, grabs it from hardwareMap and places it in the given array position
      * @param type == ColorSensor.class || DistanceSensor.class || DigitalChannel.class
@@ -54,7 +61,7 @@ public class Sensors {
     /**
      * Returns the color seen as a double array containing ARGB
      * @param position
-     * @return new Double[3]
+     * @return Double[3], Color
      */
     public double[] getColor(int position){
         return colors[position].getColor();

@@ -33,6 +33,18 @@ public class Camera {
         cameraMoniterViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, camName), cameraMoniterViewId);
     }
+    public Camera(String cameraName, String teamColor, HardwareMap hardwareMap){
+        camName = cameraName;
+        if(teamColor.toUpperCase().equals("BLUE")){
+            isBlue = true;
+        } else {
+            isBlue = false;
+        }
+        pipeline = null;
+        this.hardwareMap = hardwareMap;
+        cameraMoniterViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, camName), cameraMoniterViewId);
+    }
     public Camera(String teamColor, HardwareMap hardwareMap){
         camName = "webcam";
         if(teamColor.toUpperCase().equals("BLUE")){
@@ -72,11 +84,13 @@ public class Camera {
         return temp;
     }
     public void setPipeline(basePipelines newPipeline){
-        if(newPipeline == basePipelines.Contour){
-            Contour temp = new Contour();
-            temp.init(isBlue);
-            webcam.setPipeline(temp);
-            pipeline = temp;
+        switch(newPipeline){
+            case Contour:
+                Contour temp = new Contour();
+                temp.init(isBlue);
+                webcam.setPipeline(temp);
+                pipeline = temp;
+                break;
         }
     }
 
@@ -87,6 +101,15 @@ public class Camera {
         webcam.closeCameraDeviceAsync(() -> {
             webcam.stopStreaming();
         });
+    }
+    public boolean isTeamBlue(){
+        return isBlue;
+    }
+    public void setCameraViewId(int newCameraMoniterViewId){
+        cameraMoniterViewId = newCameraMoniterViewId;
+    }
+    public String getName(){
+        return camName;
     }
 
 

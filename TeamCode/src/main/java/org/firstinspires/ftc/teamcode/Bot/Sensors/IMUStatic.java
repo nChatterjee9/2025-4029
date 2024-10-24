@@ -4,7 +4,6 @@ import static org.firstinspires.ftc.teamcode.Bot.Setup.hardwareMap;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
@@ -18,6 +17,7 @@ public class IMUStatic {
     private static com.qualcomm.robotcore.hardware.IMU sensor;
     public IMUStatic(){
         sensor = hardwareMap.get(IMU.class, "imu");
+        //todo: FIND NEW
         sensor.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(new Orientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES,90,240,90,0))));
     }
 
