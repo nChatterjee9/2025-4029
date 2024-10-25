@@ -27,6 +27,7 @@ public class ClawTest extends LinearOpMode {
         while(opModeInInit()){
             if(gamepad1.a){
                 bot.clawRot.setTarget(claw.rotateTarget());
+                telemetry.addLine("Moving Servo");
             }
             telemetry.addLine("Theta: " + Contour.theta);
             telemetry.addLine("Servo Target: " + claw.rotateTarget());
